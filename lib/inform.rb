@@ -1,12 +1,25 @@
 require "inform/version"
-require 'highline/import'
 
 class Inform
-  class << self
-    DEFAULT_LOG_LEVEL = :info
-    LOG_LEVELS = [:debug, :info, :warning, :error]
 
-    # Highline colours at http://highline.rubyforge.org/doc/classes/HighLine.html
+  CLEAR      = "\e[0m"
+
+  BOLD       = "\e[1m"
+  UNDERLINE  = "\e[4m"
+
+  BLACK      = "\e[30m"
+  RED        = "\e[31m"
+  GREEN      = "\e[32m"
+  YELLOW     = "\e[33m"
+  BLUE       = "\e[34m"
+  MAGENTA    = "\e[35m"
+  CYAN       = "\e[36m"
+  WHITE      = "\e[37m"
+
+  DEFAULT_LOG_LEVEL = :info
+  LOG_LEVELS = [:debug, :info, :warning, :error]
+  
+  class << self
 
     def level
       @level.nil? ? DEFAULT_LOG_LEVEL : @level
@@ -18,33 +31,33 @@ class Inform
     end
 
     def debug(message, args=nil)
-      # log(:debug, message)
-      log(:debug, "    <%= color(#{color_args(message, args, :cyan)}, :cyan) %>")
+      log(:debug, "    " + color_args(message, args, CYAN))
     end
 
     def info(message, args=nil)
       if block_given?
-        log(:info, ">>> <%= color(#{color_args(message, args, :blue)}, :blue) %> :", :no_newline => true)
+        log(:info, ">>> " + color_args(message, args, BLUE) + " :", :no_newline => true)
         ret = yield
-        log(:info, "<%= color('Done.', :blue) %>", :continue_line => true, :prefix => '>>> ')
+        log(:info, color('Done.', BLUE), :continue_line => true, :prefix => '>>> ')
         ret
       else
-        log(:info, "*** <%= color(#{color_args(message, args, :green)}, :green) %>")
+        log(:info, "*** " + color_args(message, args, GREEN))
       end
     end
 
     def warning(message, args=nil)
-      log(:warning, "<%= color('WARNING', :yellow, :bold) %>: <%= color(#{color_args(message, args, :yellow)}, :yellow) %>")
+      log(:warning, color('WARNING', YELLOW, BOLD) + ': ' + color_args(message, args, YELLOW))
     end
 
     def error(message, args=nil)
-      log :error, "<%= color('ERROR', :red, :bold) %>: <%= color(#{color_args(message, args, :red)}, :red) %>"
+      log(:error, color('ERROR', RED, BOLD) + ': ' + color_args(message, args, RED))
     end
 
     private
 
     def log message_level, message, opts={}
       if LOG_LEVELS.index(level) <= LOG_LEVELS.index(message_level)
+        end_with_newline = true
         if @need_newline && !opts[:continue_line]
           message = "\n" + message
         end
@@ -52,23 +65,30 @@ class Inform
           message = opts[:prefix] + message
         end
         if opts[:no_newline]
-          message += ' ' # say magic
+          end_with_newline = false
           @need_newline = true
         else
           @need_newline = false
         end
-        say message
+        message += "\n" if end_with_newline
+        print message
       end
     end
 
-    def color_args(message, args, c)
+    def color_args(message, args, *colours)
+      colours = colours.join("")
+      message = colours + message
       if args
         args.each do |k, v|
-          v = "#{$terminal.color(v, c, :bold)}#{$terminal.class.const_get(c.to_s.upcase)}"
+          v = "#{BOLD}#{v}#{CLEAR}#{colours}"
           message.gsub!(/%\{#{k}\}/, v)
         end
       end
-      message.inspect
+      message + CLEAR
+    end
+    
+    def color(message, *colours)
+      colours.join("") + message + CLEAR
     end
   end
 end

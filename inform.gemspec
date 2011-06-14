@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
   s.summary     = %q{Interactive, colourised logging}
   s.description = s.summary
 
-  s.add_runtime_dependency("highline", "~> 1.6.2")
   s.add_development_dependency("rspec", "~> 2.6.0")
   
   s.files         = `git ls-files`.split("\n")

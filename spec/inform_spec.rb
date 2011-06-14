@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
 def should_print method
   describe method do
     it "should print a message" do
-      Inform.should_receive(:say).with(/a special message/)
+      Inform.should_receive(:print).with(/a special message/)
       Inform.send(method, "a special message")
     end
   end
@@ -42,7 +42,7 @@ describe Inform do
   context "with log level debug" do
     before :each do
       Inform.level = :debug
-      Inform.stub(:say => nil) # SSSSSH.
+      Inform.stub(:print => nil) # SSSSSH.
     end
 
     should_print :debug    
@@ -50,23 +50,23 @@ describe Inform do
 
     describe ":info with a block" do
       it "should print out the task being executed" do
-        Inform.should_receive(:say).with(/message/)
+        Inform.should_receive(:print).with(/message/)
         Inform.info("message") { true }
       end
       it "should print Done once the task is complete" do
-        Inform.should_receive(:say).with(/Done/)
+        Inform.should_receive(:print).with(/Done/)
         Inform.info("") { true }
       end
       it "should evaluate the passed block and return the result" do
         Inform.info("") { 'hello' }.should == 'hello'
       end
       it "should interpolate keyword arguments" do
-        Inform.should_receive(:say).with(/hello.+hey.+you.+goodbye/)
+        Inform.should_receive(:print).with(/hello.+hey.+you.+goodbye/)
         Inform.info("hello %{a} %{b} goodbye", :a => 'hey', :b => 'you')
       end
       it "should allow us to print messages from within a block" do
-        Inform.should_receive(:say).with(/open/)
-        Inform.should_receive(:say).with(/inner/)
+        Inform.should_receive(:print).with(/open/)
+        Inform.should_receive(:print).with(/inner/)
         Inform.info("open") { Inform.debug("inner") }
       end
     end

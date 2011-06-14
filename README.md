@@ -23,9 +23,9 @@ requirements, etc will change.
 
 ### TODO
 
- * Remove highline requirement
  * Make debug, warning, error accept blocks
  * Refactor tests
+ * Colourisation isn't tested at all - should it be?
  * RDoc
  
 ## License
