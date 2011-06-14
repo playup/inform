@@ -1,0 +1,18 @@
+#! /usr/bin/env ruby
+
+require "inform"
+
+class Frozbot
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+end
+
+Inform.level = :info
+frozbot = Inform.info("Initializing the frozbot...") do
+  Frozbot.new 'puddy'
+end
+
+Inform.info("Frozbot is %{name}", :name => frozbot.name)
