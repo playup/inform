@@ -26,7 +26,6 @@ requirements, etc will change.
  * Remove highline requirement
  * Make debug, warning, error accept blocks
  * Refactor tests
- * Remove Ruby 1.8.7 % workaround
  * RDoc
  
 ## License

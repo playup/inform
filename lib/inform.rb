@@ -62,16 +62,13 @@ class Inform
     end
 
     def color_args(message, args, c)
-      message = message % args.inject({}) { |h,(k,v)| h[k] = "#{$terminal.color(v, c, :bold)}#{$terminal.class.const_get(c.to_s.upcase)}" ; h } if args
+      if args
+        args.each do |k, v|
+          v = "#{$terminal.color(v, c, :bold)}#{$terminal.class.const_get(c.to_s.upcase)}"
+          message.gsub!(/%\{#{k}\}/, v)
+        end
+      end
       message.inspect
     end
-  end
-end
-
-class String
-  # Work around Ruby 1.8.x not supporting % args
-  alias_method :percentage, :%
-  def %(arg)
-    arg.is_a?(Hash) ? arg.inject(self) { |res,(k,v)| res.gsub(/%\{#{k}\}/, v) } : self.percentage(arg)
   end
 end

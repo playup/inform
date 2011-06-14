@@ -60,6 +60,10 @@ describe Inform do
       it "should evaluate the passed block and return the result" do
         Inform.info("") { 'hello' }.should == 'hello'
       end
+      it "should interpolate keyword arguments" do
+        Inform.should_receive(:say).with(/hello.+hey.+you.+goodbye/)
+        Inform.info("hello %{a} %{b} goodbye", :a => 'hey', :b => 'you')
+      end
       it "should allow us to print messages from within a block" do
         Inform.should_receive(:say).with(/open/)
         Inform.should_receive(:say).with(/inner/)
@@ -99,15 +103,5 @@ describe Inform do
         Inform.info("") { 'hello' }.should == 'hello'
       end
     end
-  end
-end
-
-describe String do
-  describe :% do
-    it {
-      (
-        "%{greeting} there %{name}.  How are you today %{name}?" % { :name => 'Ash', :greeting => 'Hi' }
-      ).should == "Hi there Ash.  How are you today Ash?"
-    }
   end
 end
