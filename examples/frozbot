@@ -10,9 +10,17 @@ class Frozbot
   end
 end
 
-Inform.level = :info
-frozbot = Inform.info("Initializing the frozbot...") do
+Inform.level = :debug
+
+Inform.info("About to start")
+
+frozbot = Inform.info("Initializing the %{thing}...", :thing => 'frozbot') do
+  Inform.debug "Preparing to make a new frozbot called %{name}", :name => 'puddy'
   Frozbot.new 'puddy'
 end
 
-Inform.info("Frozbot is %{name}", :name => frozbot.name)
+Inform.info("Frozbot called %{name} has been initialized.  Go %{name}, go!", :name => frozbot.name)
+
+Inform.warning 'Hey wait on'
+Inform.error 'There is an error in the %{thing} thing.', :thing => 'frozbot'
+

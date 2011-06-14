@@ -12,7 +12,9 @@ Gem::Specification.new do |s|
   s.description = s.summary
 
   s.add_development_dependency("rspec", "~> 2.6.0")
-  
+  s.add_development_dependency("rake")
+  s.add_development_dependency("gem-release")
+
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }

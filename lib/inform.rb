@@ -18,7 +18,7 @@ class Inform
 
   DEFAULT_LOG_LEVEL = :info
   LOG_LEVELS = [:debug, :info, :warning, :error]
-  
+
   class << self
 
     def level
@@ -86,7 +86,7 @@ class Inform
       end
       message + CLEAR
     end
-    
+
     def color(message, *colours)
       colours.join("") + message + CLEAR
     end
