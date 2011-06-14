@@ -21,6 +21,14 @@ Will print:
 This code was taken directly from the our **dew** project and is not ready for prime time. Interfaces,
 requirements, etc will change.
 
+### TODO
+
+ * Remove highline requirement
+ * Make debug, warning, error accept blocks
+ * Refactor tests
+ * Remove Ruby 1.8.7 % workaround
+ * RDoc
+ 
 ## License
 
 (The MIT License)
