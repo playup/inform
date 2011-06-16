@@ -6,6 +6,10 @@ def should_print method
       Inform.should_receive(:print).with(/a special message/)
       Inform.send(method, "a special message")
     end
+    it "should interpolate keyword arguments" do
+      Inform.should_receive(:print).with(/hello.+hey.+you.+goodbye/)
+      Inform.send(method, "hello %{a} %{b} goodbye", :a => 'hey', :b => 'you')
+    end
   end
 end
 
@@ -18,11 +22,32 @@ def should_not_print method
     end
   end
 end
-  
-# TODO: refactor, deal with all combinations of message / log level
+
+def should_accept_block method
+  describe ":#{method.to_s} with a block" do
+    it "should print out the task being executed" do
+      Inform.should_receive(:print).with(/message/)
+      Inform.send(method, "message") { true }
+    end
+    it "should print Done once the task is complete" do
+      Inform.should_receive(:print).with(/Done/)
+      Inform.send(method, "") { true }
+    end
+    it "should evaluate the passed block and return the result" do
+      Inform.send(method, "") { 'hello' }.should == 'hello'
+    end
+    it "should allow us to print messages from within a block" do
+      Inform.should_receive(:print).with(/open/)
+      Inform.should_receive(:print).with(/inner/)
+      Inform.send(method, "open") { Inform.send(method, "inner") }
+    end
+  end
+end
+
 describe Inform do
   before :each do
     @oldlevel = Inform.level
+    Inform.stub(:print => nil) # SSSSSH.
   end
   after :each do
     Inform.level = @oldlevel
@@ -40,36 +65,12 @@ describe Inform do
   end
   
   context "with log level debug" do
-    before :each do
-      Inform.level = :debug
-      Inform.stub(:print => nil) # SSSSSH.
-    end
+    before { Inform.level = :debug }
 
     should_print :debug    
     should_print :info    
-
-    describe ":info with a block" do
-      it "should print out the task being executed" do
-        Inform.should_receive(:print).with(/message/)
-        Inform.info("message") { true }
-      end
-      it "should print Done once the task is complete" do
-        Inform.should_receive(:print).with(/Done/)
-        Inform.info("") { true }
-      end
-      it "should evaluate the passed block and return the result" do
-        Inform.info("") { 'hello' }.should == 'hello'
-      end
-      it "should interpolate keyword arguments" do
-        Inform.should_receive(:print).with(/hello.+hey.+you.+goodbye/)
-        Inform.info("hello %{a} %{b} goodbye", :a => 'hey', :b => 'you')
-      end
-      it "should allow us to print messages from within a block" do
-        Inform.should_receive(:print).with(/open/)
-        Inform.should_receive(:print).with(/inner/)
-        Inform.info("open") { Inform.debug("inner") }
-      end
-    end
+    should_accept_block :info
+    # should_accept_block :debug
 
     should_print :warning
     should_print :error
@@ -79,6 +80,9 @@ describe Inform do
     before { Inform.level = :info }
     should_not_print :debug
     should_print :info
+    should_accept_block :info
+    # should_accept_block :debug
+    
     should_print :warning
     should_print :error
   end
