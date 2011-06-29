@@ -71,7 +71,8 @@ class Inform
           @need_newline = false
         end
         message += "\n" if end_with_newline
-        print message
+        $stdout.print message
+        $stdout.flush
       end
     end
 

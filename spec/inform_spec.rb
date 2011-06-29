@@ -3,11 +3,11 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
 def should_print method
   describe method do
     it "should print a message" do
-      Inform.should_receive(:print).with(/a special message/)
+      $stdout.should_receive(:print).with(/a special message/)
       Inform.send(method, "a special message")
     end
     it "should interpolate keyword arguments" do
-      Inform.should_receive(:print).with(/hello.+hey.+you.+goodbye/)
+      $stdout.should_receive(:print).with(/hello.+hey.+you.+goodbye/)
       Inform.send(method, "hello %{a} %{b} goodbye", :a => 'hey', :b => 'you')
     end
   end
@@ -16,8 +16,7 @@ end
 def should_not_print method
   describe method do
     it "should not print a message" do
-      Inform.should_not_receive(:say)
-      Inform.should_not_receive(:print)
+      $stdout.should_not_receive(:print)
       Inform.send(method, "a special message")
     end
   end
@@ -26,19 +25,19 @@ end
 def should_accept_block method
   describe ":#{method.to_s} with a block" do
     it "should print out the task being executed" do
-      Inform.should_receive(:print).with(/message/)
+      $stdout.should_receive(:print).with(/message/)
       Inform.send(method, "message") { true }
     end
     it "should print Done once the task is complete" do
-      Inform.should_receive(:print).with(/Done/)
+      $stdout.should_receive(:print).with(/Done/)
       Inform.send(method, "") { true }
     end
     it "should evaluate the passed block and return the result" do
       Inform.send(method, "") { 'hello' }.should == 'hello'
     end
     it "should allow us to print messages from within a block" do
-      Inform.should_receive(:print).with(/open/)
-      Inform.should_receive(:print).with(/inner/)
+      $stdout.should_receive(:print).with(/open/)
+      $stdout.should_receive(:print).with(/inner/)
       Inform.send(method, "open") { Inform.send(method, "inner") }
     end
   end
@@ -47,7 +46,7 @@ end
 describe Inform do
   before :each do
     @oldlevel = Inform.level
-    Inform.stub(:print => nil) # SSSSSH.
+    $stdout.stub(:print => nil) # SSSSSH.
   end
   after :each do
     Inform.level = @oldlevel
