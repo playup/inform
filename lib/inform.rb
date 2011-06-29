@@ -36,7 +36,7 @@ class Inform
 
     def info(message, args=nil)
       if block_given?
-        log(:info, ">>> " + color_args(message, args, BLUE) + " :", :no_newline => true)
+        log(:info, ">>> " + color_args(message, args, BLUE) + " : ", :no_newline => true)
         ret = yield
         log(:info, color('Done.', BLUE), :continue_line => true, :prefix => '>>> ')
         ret
